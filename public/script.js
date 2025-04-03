@@ -40,7 +40,8 @@ peerConnection.ontrack = (event) => {
 	const el = document.createElement('audio');
 	el.srcObject = event.streams[0];
 	el.autoplay = el.controls = true;
-	document.body.appendChild(el);
+	const container = document.getElementById('audio-container');
+	container.appendChild(el);
 };
 
 const dataChannel = peerConnection.createDataChannel('response');
