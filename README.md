@@ -2,6 +2,8 @@
 
 This is a real-time speech app that supports voice commands for function calling using OpenAI's Realtime API over WebRTC. It's built with Cloudflare Workers, and configured to run Replicate models.
 
+![screenshot](https://github.com/user-attachments/assets/d7d04594-8bbb-4687-b801-3ba8e19c85de)
+
 ## Prerequisites
 
 Here's what you'll need to build this project:
