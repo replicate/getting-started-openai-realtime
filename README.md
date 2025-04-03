@@ -1,6 +1,8 @@
-# OpenAI Realtime API with Cloudflare and Replicate
+# Getting started with the OpenAI Realtime API
 
-This is a real-time speech app that supports voice commands for function calling using OpenAI's Realtime API over WebRTC. It's built with Cloudflare Workers, and configured to run Replicate models.
+This is a real-time demo app that lets you run functions in your browser using your voice.
+
+It's powered by [OpenAI's Realtime API](https://platform.openai.com/docs/guides/realtime) over WebRTC, runs on Cloudflare Workers, and uses Replicate models to generate images.
 
 ![screenshot](https://github.com/user-attachments/assets/d7d04594-8bbb-4687-b801-3ba8e19c85de)
 
