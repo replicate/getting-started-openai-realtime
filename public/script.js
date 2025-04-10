@@ -29,6 +29,14 @@ const fns = {
 		container.prepend(img);
 
 		return { success: true, imageUrl };
+	},
+	makeItRain: () => {
+		confetti({
+			particleCount: 200,
+			spread: 180,
+			startVelocity: 45
+		});
+		return { success: true };
 	}
 };
 
@@ -91,6 +99,11 @@ function configureData() {
 							prompt: { type: 'string', description: 'Text description of the image to generate' }
 						}
 					}
+				},
+				{
+					type: 'function',
+					name: 'makeItRain',
+					description: 'Creates a confetti effect on the screen'
 				}
 			],
 		},
