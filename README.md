@@ -4,6 +4,8 @@ This is a real-time demo app that lets you run functions in your browser using y
 
 It's powered by [OpenAI's Realtime API](https://platform.openai.com/docs/guides/realtime) over WebRTC, runs on Cloudflare Workers, and uses Replicate models to generate images.
 
+Check out the guide to running this app: [replicate.com/docs/guides/openai-realtime](https://replicate.com/docs/guides/openai-realtime)
+
 ![screenshot](https://github.com/user-attachments/assets/d7d04594-8bbb-4687-b801-3ba8e19c85de)
 
 ## Prerequisites
