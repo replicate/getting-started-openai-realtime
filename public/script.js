@@ -1,36 +1,76 @@
 
-
 const fns = {
-	getPageHTML: () => {
-		return { success: true, html: document.documentElement.outerHTML };
+	getPageHTML: {
+		description: 'Gets the HTML for the current page',
+		fn: () => {
+			return { success: true, html: document.documentElement.outerHTML };
+		}
 	},
-	changeBackgroundColor: ({ color }) => {
-		document.body.style.backgroundColor = color;
-		return { success: true, color };
+	changeBackgroundColor: {
+		description: 'Changes the background color of a web page',
+		parameters: {
+			type: 'object',
+			properties: {
+				color: { type: 'string', description: 'A hex value of the color' },
+			},
+		},
+		fn: ({ color }) => {
+			document.body.style.backgroundColor = color;
+			return { success: true, color };
+		}
 	},
-	changeTextColor: ({ color }) => {
-		document.body.style.color = color;
-		return { success: true, color };
+	changeTextColor: {
+		description: 'Changes the text color of a web page',
+		parameters: {
+			type: 'object',
+			properties: {
+				color: { type: 'string', description: 'A hex value of the color' },
+			},
+		},
+		fn: ({ color }) => {
+			document.body.style.color = color;
+			return { success: true, color };
+		}
 	},
-	generateImage: async ({ prompt }) => {
-		console.log('generateImage', prompt);
-		const imageUrl = await fetch('/generate-image', {
-			method: 'POST',
-			body: prompt,
-		}).then((r) => r.text());
+	generateImage: {
+		description: 'Generates an image using AI and displays it on the page',
+		parameters: {
+			type: 'object',
+			properties: {
+				prompt: { type: 'string', description: 'Text description of the image to generate' }
+			}
+		},
+		fn: async ({ prompt }) => {
+			console.log('generateImage', prompt);
+			const imageUrl = await fetch('/generate-image', {
+				method: 'POST',
+				body: prompt,
+			}).then((r) => r.text());
 
-		console.log('imageUrl', imageUrl);
-		
-		// append the image to the page
-		const img = document.createElement('img');
-		img.src = imageUrl;
-		img.style.maxWidth = '100%';
-		const container = document.getElementById('image-container');
-		container.prepend(img);
+			console.log('imageUrl', imageUrl);
+			
+			// append the image to the page
+			const img = document.createElement('img');
+			img.src = imageUrl;
+			img.style.maxWidth = '100%';
+			const container = document.getElementById('image-container');
+			container.prepend(img);
 
-		return { success: true, imageUrl };
+			return { success: true, imageUrl };
+		}
 	}
 };
+
+// Massage the functions object into the format expected by the OpenAI API
+// Removing the fn property from the object
+const tools = Object.entries(fns).map(([name, { fn, ...tool }]) => ({
+	type: 'function',
+	name,
+	...tool
+}));
+
+
+console.log('tools', tools);
 
 // Create a WebRTC Agent
 const peerConnection = new RTCPeerConnection();
@@ -52,47 +92,7 @@ function configureData() {
 		type: 'session.update',
 		session: {
 			modalities: ['text', 'audio'],
-			// Provide the tools. Note they match the keys in the `fns` object above
-			tools: [
-				{
-					type: 'function',
-					name: 'changeBackgroundColor',
-					description: 'Changes the background color of a web page',
-					parameters: {
-						type: 'object',
-						properties: {
-							color: { type: 'string', description: 'A hex value of the color' },
-						},
-					},
-				},
-				{
-					type: 'function',
-					name: 'changeTextColor',
-					description: 'Changes the text color of a web page',
-					parameters: {
-						type: 'object',
-						properties: {
-							color: { type: 'string', description: 'A hex value of the color' },
-						},
-					},
-				},
-				{
-					type: 'function',
-					name: 'getPageHTML',
-					description: 'Gets the HTML for the current page',
-				},
-				{
-					type: 'function',
-					name: 'generateImage',
-					description: 'Generates an image using AI and displays it on the page',
-					parameters: {
-						type: 'object',
-						properties: {
-							prompt: { type: 'string', description: 'Text description of the image to generate' }
-						}
-					}
-				}
-			],
+			tools
 		},
 	};
 	dataChannel.send(JSON.stringify(event));
@@ -107,7 +107,7 @@ dataChannel.addEventListener('message', async (ev) => {
 	const msg = JSON.parse(ev.data);
 	// Handle function calls
 	if (msg.type === 'response.function_call_arguments.done') {
-		const fn = fns[msg.name];
+		const { fn } = fns[msg.name];
 		if (fn !== undefined) {
 			console.log(`Calling local function ${msg.name} with ${msg.arguments}`);
 			const args = JSON.parse(msg.arguments);
